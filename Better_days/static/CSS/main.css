@@ -1,0 +1,16 @@
+.shop-header {
+    background-image: url("https://riotfest.org/wp-content/uploads/2018/05/Hope4theDay_Header-MOCK-1024x576.jpg");
+    background-size: cover;
+    height: 700px;
+    color: black;
+}
+
+.shop-stats {
+    color: white;
+}
+
+h2 {
+    padding-top: 10%;
+}
+
+
