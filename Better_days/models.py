@@ -3,10 +3,14 @@ from flask_sqlalchemy import SQLAlchemy #ORM (Object Relationa Mapper) remember 
 from flask_login import UserMixin, LoginManager
 from datetime import datetime
 import uuid #PK primary key
+from flask_marshmallow import Marshmallow
+
+from .helpers import get_image
 
 #now we need to instantiate all our classes. Needs objects for database and login
 db = SQLAlchemy()
 login_manager = LoginManager()
+ma = Marshmallow() 
 
 @login_manager.user_loader
 #function time for user_loader
@@ -49,3 +53,53 @@ class User(db.Model, UserMixin):
     def __repr__(self):
         return f"<User: {self.username}>"
 
+
+class Product(db.Model): 
+    prod_id = db.Column(db.String, primary_key=True)
+    name = db.Column(db.String(50), nullable=False)
+    image = db.Column(db.String)
+    description = db.Column(db.String(200))
+    price = db.Column(db.Numeric(precision=10, scale=2), nullable=False)
+    qty = db.Column(db.Integer, nullable=False)
+    date_added = db.Column(db.DateTime, default = datetime.utcnow)
+
+    #now the methods 
+
+    def __init__(self, name, price, qty, image="", description=""):
+        self.prod_id = self.set_id()
+        self.name = name
+        self.image = self.set_image(image, name)
+        self.description = description
+        self.price = price
+        self.qty = qty 
+
+    def set_id(self):
+        return str(uuid.uuid4())
+    
+    def set_image(self, image, name):
+        if not image:
+            pass # MAKE SURE TO COME BACK TO THIS FOR THE API CALL!!!!!!!!
+
+        return image
+    
+    # Now we have to give the customers an option to adjust the quantity of the products
+
+    def decrement_quantity(self, qty):
+        self.qty -= int(qty)
+        return self.qty
+     
+    def increment_quantity(self, qty):
+        self.qty += int(qty)
+        return self.qty
+    
+    def __repr__(self):
+        return f"<Product: {self.name}>"
+    
+
+    #Now for the Schema class. 
+
+class ProductSchema(ma.Schema):
+    class Meta: fields = ['prod_id', 'name', 'image', 'description', 'price', 'quantity']
+
+product_schema = ProductSchema()
+product_schema = ProductSchema(many=True)
