@@ -1,4 +1,5 @@
 #External Imports
+import site
 from flask import Blueprint, render_template, request, redirect, flash
 from werkzeug.security import check_password_hash
 from flask_login import login_user, logout_user
@@ -70,3 +71,4 @@ def signin():
 def logout():
     logout_user()
     return redirect('/')
+

@@ -18,9 +18,9 @@
     </div>
     {% if current_user.is_authenticated %}
     <div class="row bg-black p-3 shop-stats">
-        <div class="col d-flex justify-content-center" style="color: lightskyblue;">Total # of People Who We've Helped.: Many</div>
-        <div class="col d-flex justify-content-center" style="color: lightskyblue">Cost for Help: $0</div>
-        <div class="col d-flex justify-content-center" style="color: lightskyblue;">Total # of Resources: Infinite.</div>
+        <div class="col d-flex justify-content-center" style="color: lightskyblue;">Total # of People Who We've Helped.: {{ stats.customer }}</div>
+        <div class="col d-flex justify-content-center" style="color: lightskyblue">Cost for Help: ${{ stats.sales }}</div>
+        <div class="col d-flex justify-content-center" style="color: lightskyblue;">Total # of Resources: {{ stats.products }}</div>
     </div>
     {% for product in shop %}
     <div class="row mt-5 mb-5 justify-content-center">

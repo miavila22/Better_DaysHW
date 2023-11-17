@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, flash, redirect, request
 
-from Better_days.models import Product, db
+from Better_days.models import Product, Customer, Order, db
 from Better_days.forms import ProductForm
 
 site = Blueprint('site', __name__, template_folder='site_templates')
@@ -8,10 +8,19 @@ site = Blueprint('site', __name__, template_folder='site_templates')
 @site.route('/')
 def shop():
 
-    allprod = Product.query.all()
+    allprods = Product.query.all()
+    allcustomers = Customer.query.all()
+    allorders = Order.query.all()
+
+    shop_stats = {
+        'products': len(allprods),
+        'sales': sum([order.order_total for order in allorders]),
+        'customer': len(allcustomers)
+    }
 
 
-    return render_template('shop.html', shop=allprod)
+
+    return render_template('shop.html', shop=allprods, stats=shop_stats )
 
 
 @site.route('/shop/create', methods= ['GET', 'POST'])

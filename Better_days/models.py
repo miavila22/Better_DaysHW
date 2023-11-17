@@ -77,8 +77,10 @@ class Product(db.Model):
         return str(uuid.uuid4())
     
     def set_image(self, image, name):
+        print('image')
         if not image:
-            pass # MAKE SURE TO COME BACK TO THIS FOR THE API CALL!!!!!!!!
+            print('We dont have an image')
+            image = get_image(name)
 
         return image
     
@@ -96,10 +98,91 @@ class Product(db.Model):
         return f"<Product: {self.name}>"
     
 
-    #Now for the Schema class. 
+
+
+class Customer(db.Model):
+    cust_id = db.Column(db.String, primary_key=True)
+    date_created = db.Column(db.String, default = datetime.utcnow())
+    prodord = db.relationship('ProdOrder', backref = 'customer', lazy=True)
+
+    def __init__(self, cust_id):
+        self.cust_id = cust_id
+
+    def __repr__(self):
+        return f"<Customer: {self.cust_id}"
+    
+
+    
+
+class ProdOrder(db.Model):
+    prodorder_id = db.Column(db.String, primary_key=True)
+    prod_id = db.Column(db.String, db.ForeignKey('product.prod_id'), nullable=False)
+    qty = db.Column(db.Integer, nullable=False)
+    price= db.Column(db.Numeric(precision = 10, scale = 2), nullable=False)
+    order_id = db.Column(db.String, db.ForeignKey('order.order_id'), nullable=False)
+    cust_id = db.Column(db.String, db.ForeignKey('customer.cust_id'), nullable=False)
+
+    def __init__(self, prod_id, qty, price, order_id, cust_id):
+        self.prodorder_id = self.set_id()
+        self.prod_id = prod_id 
+        self.qty = qty
+        self.price = self.set_price(qty, price)
+        self.order_id = order_id
+        self.cust_id = cust_id
+
+    def set_id(self):
+        return str(uuid.uuid4())
+
+
+    def set_price(self, qty ,price):
+        qty = int(qty)
+        price = float(price)
+
+        self.price = qty * price
+        return self.price
+    
+    def update_quantity(self, qty):
+        self.qty = int(qty)
+        return self.qty
+    
+
+    
+class Order(db.Model):
+    order_id = db.Column(db.String, primary_key=True)
+    order_total = db.Column(db.Numeric(precision = 10, scale = 2), nullable=False)
+    date_created = db.Column(db.DateTime, default = datetime.utcnow())
+    prodord = db.relationship('ProdOrder', backref = 'order', lazy=True)
+
+    def __init__(self):
+        self.order_id = self.set_id()
+        self.order_total = 0.00
+
+    def set_id(self):
+        return(uuid.uuid4())
+    
+    def increment_ordertotal(self, price):
+
+        self.order_total = float(self.order_total)
+        self.order_total += float(price)
+
+        return self.order_total
+    
+    def decrement_ordertotal(self, price):
+
+        self.order_total = float(self.order_total)
+        self.order_total -= float(price)
+
+        return self.order_total
+    
+    def __repr__(self):
+        return f"<Order: {self.order_id}>"
+    
+
+
+
 
 class ProductSchema(ma.Schema):
-    class Meta: fields = ['prod_id', 'name', 'image', 'description', 'price', 'quantity']
+    class Meta: fields = ['prod_id', 'name', 'image', 'description', 'price', 'qty']
 
 product_schema = ProductSchema()
-product_schema = ProductSchema(many=True)
+products_schema = ProductSchema(many=True)
