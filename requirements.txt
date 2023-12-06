@@ -9,6 +9,8 @@ colorama==0.4.6
 dnspython==2.4.2
 email-validator==2.1.0.post1
 Flask==3.0.0
+Flask-Cors==4.0.0
+Flask-JWT-Extended==4.5.3
 Flask-Login==0.6.3
 flask-marshmallow==0.15.0
 Flask-Migrate==4.0.5
@@ -25,6 +27,7 @@ marshmallow==3.20.1
 packaging==23.2
 platformdirs==4.0.0
 psycopg2==2.9.9
+PyJWT==2.8.0
 python-dotenv==1.0.0
 requests==2.31.0
 requests-cache==1.1.0
