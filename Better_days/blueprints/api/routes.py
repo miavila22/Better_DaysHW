@@ -39,6 +39,7 @@ def create_order(cust_id):
     data =  request.json
 
     customer_order = data['order']  
+    print("customer_order", customer_order)
 
     customer = Customer.query.filter(Customer.cust_id == cust_id).first() 
     if not customer: 
