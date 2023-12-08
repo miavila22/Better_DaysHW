@@ -60,18 +60,18 @@ class Product(db.Model):
     image = db.Column(db.String)
     description = db.Column(db.String(200))
     price = db.Column(db.Numeric(precision=10, scale=2), nullable=False)
-    qty = db.Column(db.Integer, nullable=False)
+    quantity = db.Column(db.Integer, nullable=False)
     date_added = db.Column(db.DateTime, default = datetime.utcnow)
 
     #now the methods 
 
-    def __init__(self, name, price, qty, image="", description=""):
+    def __init__(self, name, price, quantity, image="", description=""):
         self.prod_id = self.set_id()
         self.name = name
         self.image = self.set_image(image, name)
         self.description = description
         self.price = price
-        self.qty = qty 
+        self.quantity = quantity 
 
     def set_id(self):
         return str(uuid.uuid4())
@@ -86,13 +86,13 @@ class Product(db.Model):
     
     # Now we have to give the customers an option to adjust the quantity of the products
 
-    def decrement_quantity(self, qty):
-        self.qty -= int(qty)
-        return self.qty
+    def decrement_quantity(self, quantity):
+        self.quantity -= int(quantity)
+        return self.quantity
      
-    def increment_quantity(self, qty):
-        self.qty += int(qty)
-        return self.qty
+    def increment_quantity(self, quantity):
+        self.quantity += int(quantity)
+        return self.quantity
     
     def __repr__(self):
         return f"<Product: {self.name}>"
@@ -117,16 +117,16 @@ class Customer(db.Model):
 class ProdOrder(db.Model):
     prodorder_id = db.Column(db.String, primary_key=True)
     prod_id = db.Column(db.String, db.ForeignKey('product.prod_id'), nullable=False)
-    qty = db.Column(db.Integer, nullable=False)
+    quantity = db.Column(db.Integer, nullable=False)
     price= db.Column(db.Numeric(precision = 10, scale = 2), nullable=False)
     order_id = db.Column(db.String, db.ForeignKey('order.order_id'), nullable=False)
     cust_id = db.Column(db.String, db.ForeignKey('customer.cust_id'), nullable=False)
 
-    def __init__(self, prod_id, qty, price, order_id, cust_id):
+    def __init__(self, prod_id, quantity, price, order_id, cust_id):
         self.prodorder_id = self.set_id()
         self.prod_id = prod_id 
-        self.qty = qty
-        self.price = self.set_price(qty, price)
+        self.quantity = quantity
+        self.price = self.set_price(quantity, price)
         self.order_id = order_id
         self.cust_id = cust_id
 
@@ -134,16 +134,16 @@ class ProdOrder(db.Model):
         return str(uuid.uuid4())
 
 
-    def set_price(self, qty ,price):
-        qty = int(qty)
+    def set_price(self, quantity ,price):
+        quantity = int(quantity)
         price = float(price)
 
-        self.price = qty * price
+        self.price = quantity * price
         return self.price
     
-    def update_quantity(self, qty):
-        self.qty = int(qty)
-        return self.qty
+    def update_quantity(self, quantity):
+        self.quantity = int(quantity)
+        return self.quantity
     
 
     
@@ -182,7 +182,7 @@ class Order(db.Model):
 
 
 class ProductSchema(ma.Schema):
-    class Meta: fields = ['prod_id', 'name', 'image', 'description', 'price', 'qty']
+    class Meta: fields = ['prod_id', 'name', 'image', 'description', 'price', 'quantity']
 
 product_schema = ProductSchema()
 products_schema = ProductSchema(many=True)

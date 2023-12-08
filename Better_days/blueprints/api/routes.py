@@ -52,14 +52,14 @@ def create_order(cust_id):
     for product in customer_order:
 
 
-        prodorder = ProdOrder(product['prod_id'], product['qty'], product['price'], order.order_id, customer.cust_id )
+        prodorder = ProdOrder(product['prod_id'], product['quantity'], product['price'], order.order_id, customer.cust_id )
         db.session.add(prodorder)
 
         order.increment_ordertotal(prodorder.price)
 
         current_product = Product.query.get(product['prod_id'])
         
-        current_product.decrement_quantity(product['qty'])
+        current_product.decrement_quantity(product['quantity'])
 
     db.session.commit()
 
@@ -82,7 +82,7 @@ def get_orders(cust_id):
 
         product_dict = product_schema.dump(product)
 
-        product_dict['qty'] = order.qty
+        product_dict['quantity'] = order.quantity
         product_dict['order_id'] = order.order_id
         product_dict['id'] = order.prodorder_id
 
@@ -95,7 +95,7 @@ def get_orders(cust_id):
 def update_order(order_id):
 
     data = request.json
-    new_qty = int(data['qty'])
+    new_quantity = int(data['quantity'])
     prod_id = data['prod_id']
 
 
@@ -106,21 +106,21 @@ def update_order(order_id):
 
 
 
-    prodorder.set_price(product.price, new_qty)
+    prodorder.set_price(product.price, new_quantity)
 
 
-    diff = abs(new_qty - prodorder.quantity)
+    diff = abs(new_quantity - prodorder.quantity)
 
 
-    if prodorder.quantity > new_qty: 
+    if prodorder.quantity > new_quantity: 
         product.increment_quantity(diff) #we are putting some products back
         order.decrement_ordertotal(prodorder.price) #our order total is less $ now 
 
-    elif prodorder.quantity < new_qty:
+    elif prodorder.quantity < new_quantity:
         product.decrement_quantity(diff) #we are taking more quantity aaway
         order.increment_ordertotal(prodorder.price) #our order total is more $ now 
 
-    prodorder.update_quantity(new_qty)
+    prodorder.update_quantity(new_quantity)
 
     db.session.commit()
 

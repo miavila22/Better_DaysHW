@@ -34,7 +34,7 @@
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">Price: {{ product.price }}</li>
                     <li class="list-group-item">Quantity: {{ product.quantity }}</li>
-                    {% if product.qty <= 10 %}
+                    {% if product.quantity <= 10 %}
                         <span class='err-msg btn-danger p-2 opacity-50 rounded'> ALERT: Quantity is Low </span>
                     {% endif %}
                 </ul>
